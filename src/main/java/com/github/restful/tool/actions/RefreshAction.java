@@ -12,6 +12,7 @@ package com.github.restful.tool.actions;
 
 import com.github.restful.tool.utils.data.Bundle;
 import com.github.restful.tool.view.window.WindowFactory;
+import com.github.restful.tool.view.window.frame.HttpTestPanel;
 import com.github.restful.tool.view.window.frame.Window;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -36,5 +37,6 @@ public class RefreshAction extends DumbAwareAction {
             return;
         }
         toolWindow.refresh();
+
     }
 }

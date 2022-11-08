@@ -10,6 +10,7 @@
  */
 package com.github.restful.tool.configuration;
 
+import com.github.restful.tool.beans.RequestInfo;
 import com.github.restful.tool.beans.settings.Settings;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -18,6 +19,9 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ZhangYuanSheng
@@ -30,9 +34,15 @@ public class AppSetting implements PersistentStateComponent<AppSetting> {
 
     private final Settings setting;
 
+    public String envJson;
+    public final Map<String, RequestInfo> requestInfoMap;
+
     public AppSetting() {
         this.setting = new Settings();
         this.setting.initValue();
+
+        requestInfoMap = new HashMap<>();
+        envJson = "";
     }
 
     public static AppSetting getInstance() {
@@ -64,5 +74,34 @@ public class AppSetting implements PersistentStateComponent<AppSetting> {
 
     public void setAppSetting(Settings setting) {
         this.setting.applySetting(setting);
+    }
+
+    public RequestInfo getRequestInfo(String key) {
+        if(key == null) {
+            return null;
+        }
+        return requestInfoMap.get(key);
+    }
+
+    public void removeRequestInfo(String key) {
+        if(key == null) {
+            return;
+        }
+        requestInfoMap.remove(key);
+    }
+
+    public void saveRequestInfo(String key, RequestInfo requestInfo) {
+        if(key == null) {
+            return;
+        }
+        requestInfoMap.put(key, requestInfo);
+    }
+
+    public String getEnvJson() {
+        return envJson;
+    }
+
+    public void setEnvJson(String envJson) {
+        this.envJson = envJson;
     }
 }

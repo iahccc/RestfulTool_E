@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Key<T> {
 
     private static final AtomicInteger OUR_KEYS_COUNTER = new AtomicInteger();
-    private static final IntObjectMap<Key<?>> ALL_KEYS = ConcurrentCollectionFactory.createConcurrentIntObjectWeakValueMap();
+    private static final IntObjectMap<Key<?>> ALL_KEYS = ConcurrentCollectionFactory.createConcurrentIntObjectSoftValueMap();
 
     private final int index = OUR_KEYS_COUNTER.getAndIncrement();
 

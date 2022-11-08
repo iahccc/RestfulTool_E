@@ -50,6 +50,7 @@ public class GotoRequestAction extends GotoActionBase implements DumbAware {
 
     @Override
     protected void gotoActionPerformed(@NotNull AnActionEvent e) {
+        System.out.println("hello");
         Project project = e.getProject();
         if (project == null) {
             return;

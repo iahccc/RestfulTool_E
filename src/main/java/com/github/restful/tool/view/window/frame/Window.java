@@ -1,5 +1,6 @@
 package com.github.restful.tool.view.window.frame;
 
+import com.github.restful.tool.actions.EnvConfigAction;
 import com.github.restful.tool.actions.RefreshAction;
 import com.github.restful.tool.actions.WithLibraryAction;
 import com.github.restful.tool.actions.filters.HttpMethodFilterAction;
@@ -189,6 +190,9 @@ public class Window extends SimpleToolWindowPanel implements Disposable {
         group.add(new WithLibraryAction());
         group.add(CommonActionsManager.getInstance().createExpandAllAction(apiServiceListPanel, this));
         group.add(CommonActionsManager.getInstance().createCollapseAllAction(apiServiceListPanel, this));
+
+        group.addSeparator();
+        group.add(new EnvConfigAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(
                 ActionPlaces.TOOLBAR,

@@ -1,6 +1,8 @@
 package com.github.restful.tool.utils.convert;
 
+import cn.hutool.http.HttpUtil;
 import com.github.restful.tool.annotation.SpringHttpMethodAnnotation;
+import com.github.restful.tool.beans.HttpMethod;
 import com.github.restful.tool.utils.PsiUtil;
 import com.github.restful.tool.utils.data.JsonUtil;
 import com.intellij.psi.*;
@@ -30,7 +32,7 @@ public class ParamsConvert {
      *
      * @return str
      */
-    public static String formatString(NavigatablePsiElement psiElement) {
+    public static String getParam(NavigatablePsiElement psiElement, HttpMethod httpMethod) {
         Map<String, Object> methodParams = null;
         if (psiElement instanceof PsiMethod) {
             methodParams = parsePsiMethodParams(((PsiMethod) psiElement));
@@ -40,7 +42,11 @@ public class ParamsConvert {
         if (methodParams == null) {
             return "";
         }
-        return JsonUtil.formatJson(methodParams);
+        if(HttpMethod.GET == httpMethod) {
+            return HttpUtil.toParams(methodParams);
+        } else {
+            return JsonUtil.formatJson(methodParams);
+        }
     }
 
     @NotNull

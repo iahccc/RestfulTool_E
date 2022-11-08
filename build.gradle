@@ -3,7 +3,7 @@ plugins {
     id "java"
     // Kotlin support
     id "org.jetbrains.kotlin.jvm" version "1.4.32"
-    id 'org.jetbrains.intellij' version '0.7.2'
+    id 'org.jetbrains.intellij' version '1.9.0'
 }
 sourceCompatibility = JavaVersion.VERSION_1_10
 targetCompatibility = JavaVersion.VERSION_1_10
@@ -23,31 +23,34 @@ dependencies {
     //noinspection SpellCheckingInspection
     implementation('cn.hutool:hutool-all:5.7.16')
 
-    implementation('org.dom4j:dom4j:2.1.3')
+    implementation('dom4j:dom4j:1.6.1')
+
+    implementation('org.openjdk.nashorn:nashorn-core:15.0')
 }
 
 intellij {
-    updateSinceUntilBuild false
-    type 'IC'
+//    localPath.set("D:\\Program Files\\IntelliJ IDEA Community Edition 2022.2.3")
+    updateSinceUntilBuild.set(true)
+    type.set("IC")
 //    version '2020.2'
-    version 'LATEST-EAP-SNAPSHOT'
-//    version '2021.2'
-    pluginName 'RestfulTool'
-
-    plugins = ['java', 'properties', 'yaml', 'Kotlin']
+//    version 'LATEST-EAP-SNAPSHOT'
+    version = '2021.1'
+    pluginName.set("RestfulTool")
+    plugins = ["java", "properties", "yaml", "Kotlin"]
+//    plugins.set(listOf("java", "properties", "yaml", "Kotlin"))
 }
 
-publishPlugin {
-    // 发布插件，token在`https://plugins.jetbrains.com/author/me/tokens`申请
-    token System.getenv("IdeaToken")
-    // channels 'beta'
-    channels 'stable'
-}
+//publishPlugin {
+//    // 发布插件，token在`https://plugins.jetbrains.com/author/me/tokens`申请
+//    token System.getenv("IdeaToken")
+//    // channels 'beta'
+//    channels 'stable'
+//}
 
 group 'cn.cloud.auto.restful.tool'
 version '1.4.5'
 patchPluginXml {
-    changeNotes """
+    changeNotes = """
         <ul>
             <li>release</li>
         </ul>
