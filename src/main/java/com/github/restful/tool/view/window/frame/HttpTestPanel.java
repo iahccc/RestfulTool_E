@@ -356,7 +356,6 @@ public class HttpTestPanel extends JPanel {
                         bodyTextTypeCache.remove(chooseApiService);
                         chooseApiService.setHeaders("");
                         chooseRequest(chooseApiService);
-                        AppSetting.getInstance().removeRequestInfo(chooseApiService.getIdentity());
                     }
                 }
             }
@@ -490,8 +489,6 @@ public class HttpTestPanel extends JPanel {
 
         Callable<ParseRequest> parseRequestCallable = () -> ParseRequest.wrap(apiService, this);
         Consumer<ParseRequest> parseRequestConsumer = parseRequest -> {
-            // 选择Body页面
-            tabs.select(bodyTab, false);
 
             RequestInfo requestInfo = null;
             if(chooseApiService != null) {
@@ -514,6 +511,9 @@ public class HttpTestPanel extends JPanel {
                 requestScript.setText(null);
                 setColor(false);
             }
+
+            // 选择Body页面
+            tabs.select(bodyTab, false);
         };
         Async.runRead(project, parseRequestCallable, parseRequestConsumer);
     }
