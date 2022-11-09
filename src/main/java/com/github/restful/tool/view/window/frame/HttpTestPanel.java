@@ -355,8 +355,9 @@ public class HttpTestPanel extends JPanel {
                         bodyCache.remove(chooseApiService);
                         bodyTextTypeCache.remove(chooseApiService);
                         chooseApiService.setHeaders("");
+                        chooseRequest(chooseApiService);
+                        AppSetting.getInstance().removeRequestInfo(chooseApiService.getIdentity());
                     }
-                    chooseRequest(chooseApiService);
                 }
             }
         });
