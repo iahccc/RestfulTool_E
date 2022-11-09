@@ -1,6 +1,7 @@
 package com.github.restful.tool.beans;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 请求信息
@@ -58,5 +59,29 @@ public class RequestInfo implements Serializable {
 
 	public void setScript(String script) {
 		this.script = script;
+	}
+
+	@Override
+	public String toString() {
+		return "RequestInfo{" +
+				"httpMethod=" + httpMethod +
+				", url='" + url + '\'' +
+				", head='" + head + '\'' +
+				", requestBody='" + requestBody + '\'' +
+				", script='" + script + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		RequestInfo that = (RequestInfo) o;
+		return httpMethod == that.httpMethod && Objects.equals(url, that.url) && Objects.equals(head, that.head) && Objects.equals(requestBody, that.requestBody) && Objects.equals(script, that.script);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(httpMethod, url, head, requestBody, script);
 	}
 }

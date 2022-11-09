@@ -29,12 +29,12 @@ dependencies {
 }
 
 intellij {
-//    localPath.set("D:\\Program Files\\IntelliJ IDEA Community Edition 2022.2.3")
+    localPath.set("D:\\Program Files\\IntelliJ IDEA Community Edition 2022.2.3")
     updateSinceUntilBuild.set(true)
     type.set("IC")
 //    version '2020.2'
 //    version 'LATEST-EAP-SNAPSHOT'
-    version = '2021.1'
+//    version = '2021.1'
     pluginName.set("RestfulTool")
     plugins = ["java", "properties", "yaml", "Kotlin"]
 //    plugins.set(listOf("java", "properties", "yaml", "Kotlin"))

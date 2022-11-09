@@ -36,6 +36,7 @@ import com.intellij.openapi.fileTypes.impl.FileTypeRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.psi.PsiInvalidElementAccessException;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.tabs.JBTabs;
 import com.intellij.ui.tabs.TabInfo;
@@ -51,9 +52,12 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -230,7 +234,7 @@ public class HttpTestPanel extends JPanel {
         requestBodyFileType.setFocusable(false);
         bodyFileTypePanel.add(requestBodyFileType, BorderLayout.CENTER);
         bodyFileTypePanel.setBorder(JBUI.Borders.emptyLeft(3));
-        southPanel.add(bodyFileTypePanel, BorderLayout.WEST);
+        southPanel.add(bodyFileTypePanel, BorderLayout.NORTH);
         tabs.addListener(new TabsListener() {
             @Override
             public void beforeSelectionChanged(TabInfo oldSelection, TabInfo newSelection) {
@@ -247,8 +251,9 @@ public class HttpTestPanel extends JPanel {
 
         resetBtn = new JButton();
         resetBtn.setText(Bundle.getString("http.tool.button.reset"));
-        southPanel.add(resetBtn, BorderLayout.EAST);
+        southPanel.add(resetBtn, BorderLayout.SOUTH);
 
+        setColor(false);
     }
 
     /**
@@ -306,19 +311,19 @@ public class HttpTestPanel extends JPanel {
                     String name = editor.getName();
                     String text = editor.getText();
                     setCache(name, chooseApiService, text);
-                }
 
-                // 保存请求信息
-                RequestInfo requestInfo = new RequestInfo();
-                HttpMethod method = Optional.ofNullable((HttpMethod) requestMethod.getSelectedItem()).orElse(HttpMethod.GET);
-                requestInfo.setHttpMethod(method);
-                requestInfo.setUrl(requestUrl.getText());
-                requestInfo.setHead(requestHead.getText());
-                requestInfo.setRequestBody(requestBody.getText());
-                requestInfo.setScript(requestScript.getText());
-
-                if (chooseApiService != null) {
-                    AppSetting.getInstance().saveRequestInfo(chooseApiService.getIdentity(), requestInfo);
+                    // 保存请求信息
+                    RequestInfo requestInfo = new RequestInfo();
+                    HttpMethod method = Optional.ofNullable((HttpMethod) requestMethod.getSelectedItem()).orElse(HttpMethod.GET);
+                    requestInfo.setHttpMethod(method);
+                    requestInfo.setUrl(requestUrl.getText());
+                    requestInfo.setHead(requestHead.getText());
+                    requestInfo.setRequestBody(requestBody.getText());
+                    requestInfo.setScript(requestScript.getText());
+                    if(!requestInfo.equals(AppSetting.getInstance().getRequestInfo(chooseApiService.getIdentity()))) {
+                        AppSetting.getInstance().saveRequestInfo(chooseApiService.getIdentity(), requestInfo);
+                        setColor(true);
+                    }
                 }
             }
         };
@@ -340,10 +345,25 @@ public class HttpTestPanel extends JPanel {
         requestBody.addFocusListener(function.apply(requestBody));
         requestScript.addFocusListener(function.apply(requestScript));
 
-        resetBtn.addActionListener(event -> {
-            if(null != chooseApiService) {
-                AppSetting.getInstance().removeRequestInfo(chooseApiService.getIdentity());
-                reset();
+        resetBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(e.getClickCount() == 2) {
+                    if (chooseApiService != null) {
+                        AppSetting.getInstance().removeRequestInfo(chooseApiService.getIdentity());
+                        bodyCache.remove(chooseApiService);
+                        bodyTextTypeCache.remove(chooseApiService);
+                        chooseApiService.setHeaders("");
+                    }
+                    chooseRequest(chooseApiService);
+                }
+            }
+        });
+
+        resetBtn.addMouseMotionListener(new MouseAdapter(){
+            public void mouseMoved(MouseEvent e) {
+                resetBtn.setToolTipText("Double Click");
             }
         });
     }
@@ -483,6 +503,7 @@ public class HttpTestPanel extends JPanel {
                 requestBody.setText(requestInfo.getRequestBody());
                 responseView.setText(null);
                 requestScript.setText(requestInfo.getScript());
+                setColor(true);
             } else {
                 requestMethod.setSelectedItem(parseRequest.getMethod());
                 requestUrl.setText(parseRequest.getUrl());
@@ -490,10 +511,12 @@ public class HttpTestPanel extends JPanel {
                 requestBody.setText(parseRequest.getBody());
                 responseView.setText(null);
                 requestScript.setText(null);
+                setColor(false);
             }
         };
         Async.runRead(project, parseRequestCallable, parseRequestConsumer);
     }
+
 
     public void setCallback(DetailHandle callback) {
         this.callback = callback;
@@ -502,6 +525,7 @@ public class HttpTestPanel extends JPanel {
     public void reset() {
         this.chooseRequest(null);
         refreshEnvironment();
+        setColor(false);
     }
 
     public void refreshEnvironment() {
@@ -563,6 +587,14 @@ public class HttpTestPanel extends JPanel {
             return;
         }
         bodyTextTypeCache.put(chooseApiService, fileType);
+    }
+
+    public void setColor(boolean modified) {
+        if(modified) {
+            setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, JBColor.ORANGE));
+        } else {
+            setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, JBColor.BLUE));
+        }
     }
 
     public interface DetailHandle {

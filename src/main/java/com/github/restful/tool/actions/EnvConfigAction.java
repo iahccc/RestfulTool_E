@@ -59,10 +59,10 @@ public class EnvConfigAction extends DumbAwareAction {
                 String text = event.getDocument().getText();
                 AppSetting.getInstance().setEnvJson(text);
 
-                Window window = WindowFactory.getToolWindow(project);
-                if(window != null) {
-                    window.refresh();
-                }
+//                Window window = WindowFactory.getToolWindow(project);
+//                if(window != null) {
+//                    window.refresh();
+//                }
             }
         });
 
