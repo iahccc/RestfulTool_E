@@ -7,6 +7,8 @@ import cn.hutool.json.JSONUtil;
 import com.github.restful.tool.beans.HttpMethod;
 import com.github.restful.tool.beans.settings.Settings;
 import com.github.restful.tool.view.components.editor.CustomEditor;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.intellij.openapi.fileTypes.FileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +49,15 @@ public final class HttpUtils {
 
         if (body == null || "".equals(body.trim())) {
             return request;
+        }
+
+        if(HttpMethod.GET == method) {
+            try{
+                Gson gson = new Gson();
+                Map<String, Object> map = gson.fromJson(body, Map.class);
+                body = HttpUtil.toParams(map);
+            } catch (JsonSyntaxException ignored) {
+            }
         }
 
         // 设置内容主体, 且自动判断类

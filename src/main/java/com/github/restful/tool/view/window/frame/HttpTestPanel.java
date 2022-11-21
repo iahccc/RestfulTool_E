@@ -181,8 +181,11 @@ public class HttpTestPanel extends JPanel {
 
 
         requestUrl = new CustomEditor(project);
-        requestUrl.setName(IDENTITY_URL);
         requestUrl.setOneLineMode(true);
+        requestUrl.setName(IDENTITY_URL);
+        if(requestUrl.getEditor() != null) {
+            requestUrl.getEditor().getSettings().setLineNumbersShown(false);
+        }
         panelInput.add(requestUrl);
 
         sendRequest = new JXButton(Bundle.getString("http.tool.button.send"));
@@ -205,7 +208,7 @@ public class HttpTestPanel extends JPanel {
         putClientProperty("nextFocus", requestBody);
 
         responseView = new CustomEditor(project);
-        responseView.setEnabled(false);
+        responseView.setViewer(true);
         responseTab = new TabInfo(responseView);
         responseTab.setText(Bundle.getString("http.tool.tab.response"));
         tabs.addTab(responseTab);
@@ -249,9 +252,12 @@ public class HttpTestPanel extends JPanel {
             bodyFileTypePanel.setVisible(bodyTab.getText().equalsIgnoreCase(selectedTab.getText()));
         }
 
+        JPanel panel = new JPanel(new BorderLayout());
+        southPanel.add(panel, BorderLayout.SOUTH);
+
         resetBtn = new JButton();
         resetBtn.setText(Bundle.getString("http.tool.button.reset"));
-        southPanel.add(resetBtn, BorderLayout.SOUTH);
+        panel.add(resetBtn, BorderLayout.EAST);
 
         setColor(false);
     }
@@ -647,7 +653,7 @@ public class HttpTestPanel extends JPanel {
                     if (detail.bodyCache.containsKey(apiService)) {
                         reqBody = detail.getCache(IDENTITY_BODY, apiService);
                     } else {
-                        reqBody = ParamsConvert.getParam(apiService.getPsiElement(), selItem);
+                        reqBody = ParamsConvert.getParam(apiService.getPsiElement());
                         detail.setCache(IDENTITY_BODY, apiService, reqBody);
                     }
                 }

@@ -32,7 +32,7 @@ public class ParamsConvert {
      *
      * @return str
      */
-    public static String getParam(NavigatablePsiElement psiElement, HttpMethod httpMethod) {
+    public static String getParam(NavigatablePsiElement psiElement) {
         Map<String, Object> methodParams = null;
         if (psiElement instanceof PsiMethod) {
             methodParams = parsePsiMethodParams(((PsiMethod) psiElement));
@@ -42,11 +42,7 @@ public class ParamsConvert {
         if (methodParams == null) {
             return "";
         }
-        if(HttpMethod.GET == httpMethod) {
-            return HttpUtil.toParams(methodParams);
-        } else {
-            return JsonUtil.formatJson(methodParams);
-        }
+        return JsonUtil.formatJson(methodParams);
     }
 
     @NotNull

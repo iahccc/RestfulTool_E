@@ -92,7 +92,7 @@ public class CustomEditor extends EditorTextField {
     }
 
     private void initOneLineModePre(@NotNull final EditorEx editor) {
-        editor.setOneLineMode(false);
+//        editor.setOneLineMode(false);
         editor.setColorsScheme(editor.createBoundColorSchemeDelegate(null));
         editor.getSettings().setCaretRowShown(false);
     }
