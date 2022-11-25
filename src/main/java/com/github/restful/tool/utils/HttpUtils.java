@@ -28,7 +28,7 @@ public final class HttpUtils {
 
     private static final int REQUEST_TIMEOUT = 1000 * 10;
 
-    private static final ExecutorService executor = ThreadUtil.newSingleExecutor();
+    private static final ExecutorService executor = ThreadUtil.newExecutor(1, 5);
 
     private static final Pattern jsonPattern = Pattern.compile("application/json", Pattern.CASE_INSENSITIVE);
     private static final Pattern htmlPattern = Pattern.compile("text/html", Pattern.CASE_INSENSITIVE);

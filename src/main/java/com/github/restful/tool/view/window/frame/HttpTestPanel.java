@@ -299,7 +299,7 @@ public class HttpTestPanel extends JPanel {
         });
 
         MessageBusConnection messageBusConnection = project.getMessageBus().connect();
-        messageBusConnection.subscribe(RestDetailTopic.TOPIC, request -> {
+        messageBusConnection.subscribe(RestDetailTopic.TOPIC, (RestDetailTopic) request -> {
             if (request != null) {
                 bodyCache.remove(request);
                 bodyTextTypeCache.remove(request);
@@ -316,7 +316,9 @@ public class HttpTestPanel extends JPanel {
                 if (editor != null && chooseApiService != null) {
                     String name = editor.getName();
                     String text = editor.getText();
-                    setCache(name, chooseApiService, text);
+                    if(name != null) {
+                        setCache(name, chooseApiService, text);
+                    }
 
                     // 保存请求信息
                     RequestInfo requestInfo = new RequestInfo();
