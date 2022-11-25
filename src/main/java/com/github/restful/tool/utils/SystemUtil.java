@@ -61,6 +61,23 @@ public class SystemUtil {
     }
 
     /**
+     * 生成url
+     *
+     * @param baseUrl    基础Url
+     * @param path        路径
+     * @return url
+     */
+    @NotNull
+    public static String buildUrl(@NotNull String baseUrl, String path) {
+        StringBuilder url = new StringBuilder(baseUrl);
+        if (!path.startsWith(SLASH)) {
+            url.append(SLASH);
+        }
+        url.append(path);
+        return url.toString();
+    }
+
+    /**
      * 格式化request path
      *
      * @param path path

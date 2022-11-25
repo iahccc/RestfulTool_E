@@ -222,23 +222,42 @@ public class Settings {
                 0
         );
 
-        public static final SettingKey<String> CONTAINER_CONTEXT = SettingKey.createInputString(
-                Bundle.getString("setting.httpTools.DefaultContextPathOfTheContainer"),
-                "/",
+//        public static final SettingKey<String> CONTAINER_CONTEXT = SettingKey.createInputString(
+//                Bundle.getString("setting.httpTools.DefaultContextPathOfTheContainer"),
+//                "/",
+//                data -> {
+//                    if (data == null || data.length() < 1) {
+//                        return false;
+//                    }
+//                    data = data.trim();
+//                    final String fix = "/";
+//                    if (data.length() == 1) {
+//                        return fix.equals(data);
+//                    } else {
+//                        if (data.contains(fix + fix)) {
+//                            return false;
+//                        }
+//                        return data.startsWith(fix) && !data.endsWith(fix);
+//                    }
+//                }
+//        );
+//
+//        public static final SettingKey<Integer> CONTAINER_PORT = SettingKey.createInputNumber(
+//                Bundle.getString("setting.httpTools.DefaultPortOfTheContainer"),
+//                8080,
+//                data -> {
+//                    if (data == null) {
+//                        return false;
+//                    }
+//                    return data >= 0 && data <= 65535;
+//                }
+//        );
+
+        public static final SettingKey<String> BASE_URL = SettingKey.createInputString(
+                Bundle.getString("setting.httpTools.BaseUrl"),
+                "http://localhost:8080",
                 data -> {
-                    if (data == null || data.length() < 1) {
-                        return false;
-                    }
-                    data = data.trim();
-                    final String fix = "/";
-                    if (data.length() == 1) {
-                        return fix.equals(data);
-                    } else {
-                        if (data.contains(fix + fix)) {
-                            return false;
-                        }
-                        return data.startsWith(fix) && !data.endsWith(fix);
-                    }
+                    return true;
                 }
         );
 
@@ -253,17 +272,6 @@ public class Settings {
                         return false;
                     }
                     return jsonElement.isJsonObject();
-                }
-        );
-
-        public static final SettingKey<Integer> CONTAINER_PORT = SettingKey.createInputNumber(
-                Bundle.getString("setting.httpTools.DefaultPortOfTheContainer"),
-                8080,
-                data -> {
-                    if (data == null) {
-                        return false;
-                    }
-                    return data >= 0 && data <= 65535;
                 }
         );
 

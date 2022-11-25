@@ -122,7 +122,7 @@ public class TextArea<T> extends JPanel implements Option {
     }
 
     private void initInput() {
-        getInput().setColumns(40);
+        getInput().setColumns(80);
         getInput().setRows(10);
     }
 

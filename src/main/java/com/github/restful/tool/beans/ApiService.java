@@ -10,6 +10,7 @@
  */
 package com.github.restful.tool.beans;
 
+import com.github.restful.tool.beans.settings.Settings;
 import com.github.restful.tool.utils.SystemUtil;
 import com.github.restful.tool.view.icon.Icons;
 import com.intellij.psi.NavigatablePsiElement;
@@ -188,12 +189,7 @@ public class ApiService {
         )
         === 弃用 ===
         */
-        return SystemUtil.buildUrl(
-                "http",
-                getPort(),
-                null,
-                this.getPath()
-        );
+        return SystemUtil.buildUrl(Settings.HttpToolOptionForm.BASE_URL.getData(), this.getPath());
     }
 
     @Override
