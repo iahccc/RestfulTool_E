@@ -33,6 +33,9 @@ public class StringInput extends BaseInput<String> {
     private void initInput() {
         getInput().setColumns(16);
     }
+    public void setColumns(int columns) {
+        getInput().setColumns(columns);
+    }
 
     @Nullable
     @Override

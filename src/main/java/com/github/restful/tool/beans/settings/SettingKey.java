@@ -75,9 +75,11 @@ public class SettingKey<T> extends Key<T> {
     }
 
     @NotNull
-    public static SettingKey<String> createInputString(@NotNull String name, @NotNull String defaultData, @NotNull BaseInput.Verify<String> verify) {
+    public static SettingKey<String> createInputString(@NotNull String name, @NotNull String defaultData, @NotNull BaseInput.Verify<String> verify, @NotNull Integer columns) {
         SettingKey<String> settingKey = new SettingKey<>(name, defaultData, STRING_CONVERTER);
-        settingKey.option = new StringInput(defaultData, settingKey, verify);
+        StringInput stringInput = new StringInput(defaultData, settingKey, verify);
+        stringInput.setColumns(columns);
+        settingKey.option = stringInput;
         return settingKey;
     }
 

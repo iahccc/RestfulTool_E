@@ -258,12 +258,13 @@ public class Settings {
                 "http://localhost:8080",
                 data -> {
                     return true;
-                }
+                },
+                40
         );
 
         public static final SettingKey<String> GLOBAL_HEADER = SettingKey.createTextArea(
                 Bundle.getString("setting.httpTools.DefaultHead"),
-                "",
+                "{}",
                 data -> {
                     JsonElement jsonElement;
                     try {
