@@ -17,6 +17,7 @@ import com.github.restful.tool.beans.ApiService;
 import com.github.restful.tool.beans.EnvironmentInfo;
 import com.github.restful.tool.beans.HttpMethod;
 import com.github.restful.tool.beans.RequestInfo;
+import com.github.restful.tool.beans.settings.Settings;
 import com.github.restful.tool.configuration.AppSetting;
 import com.github.restful.tool.service.Notify;
 import com.github.restful.tool.service.topic.RestDetailTopic;
@@ -52,7 +53,6 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -643,8 +643,15 @@ public class HttpTestPanel extends JPanel {
 
                     JSONObject json = new JSONObject(apiService.getModuleHeaders());
                     try {
+                        // Global Header
+                        String globalHeader = Settings.HttpToolOptionForm.GLOBAL_HEADER.getData();
+                        JSONObject parse = JSONUtil.parseObj(globalHeader);
+                        if(!parse.isEmpty()) {
+                            json.putAll(parse);
+                        }
+
                         String header = apiService.getHeaders();
-                        JSONObject parse = JSONUtil.parseObj(header);
+                         parse = JSONUtil.parseObj(header);
                         if (!parse.isEmpty()) {
                             json.putAll(parse);
                         }

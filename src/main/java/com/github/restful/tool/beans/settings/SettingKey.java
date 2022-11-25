@@ -88,6 +88,13 @@ public class SettingKey<T> extends Key<T> {
         return settingKey;
     }
 
+    @NotNull
+    public static SettingKey<String> createTextArea(@NotNull String name, @NotNull String defaultData, @NotNull TextArea.Verify<String> verify) {
+        SettingKey<String> settingKey = new SettingKey<>(name, defaultData, STRING_CONVERTER);
+        settingKey.option = new TextArea(defaultData, settingKey, verify, true);
+        return settingKey;
+    }
+
     public T getData() {
         Settings appSetting = AppSetting.getInstance().getAppSetting();
         return appSetting.getData(this);

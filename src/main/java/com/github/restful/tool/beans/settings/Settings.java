@@ -20,7 +20,8 @@ import com.github.restful.tool.view.icon.IconTypeManager;
 import com.github.restful.tool.view.icon.PreviewIconType;
 import com.github.restful.tool.view.window.options.Option;
 import com.github.restful.tool.view.window.options.OptionForm;
-import com.intellij.openapi.project.Project;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -238,6 +239,20 @@ public class Settings {
                         }
                         return data.startsWith(fix) && !data.endsWith(fix);
                     }
+                }
+        );
+
+        public static final SettingKey<String> GLOBAL_HEADER = SettingKey.createTextArea(
+                Bundle.getString("setting.httpTools.DefaultHead"),
+                "",
+                data -> {
+                    JsonElement jsonElement;
+                    try {
+                        jsonElement = JsonParser.parseString(data);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                    return jsonElement.isJsonObject();
                 }
         );
 
