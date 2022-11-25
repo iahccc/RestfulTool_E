@@ -11,6 +11,7 @@
 package com.github.restful.tool.view.search;
 
 import com.github.restful.tool.beans.HttpMethod;
+import com.github.restful.tool.utils.Actions;
 import com.github.restful.tool.utils.data.Bundle;
 import com.github.restful.tool.view.icon.Icons;
 import com.intellij.featureStatistics.FeatureUsageTracker;
@@ -80,6 +81,7 @@ public class GotoRequestAction extends GotoActionBase implements DumbAware {
                     RestServiceItem navigationItem = (RestServiceItem) element;
                     if (navigationItem.canNavigate()) {
                         navigationItem.navigate(true);
+                        Actions.gotoApiServiceTree(navigationItem.getPsiMethod());
                     }
                 }
             }
