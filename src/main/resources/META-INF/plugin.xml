@@ -37,7 +37,7 @@
         </ul>
         ]]></description>
 
-    <idea-version since-build="222.2680.4"/>
+    <idea-version since-build="201.0"/>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
