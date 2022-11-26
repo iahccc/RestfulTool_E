@@ -80,7 +80,7 @@ public class GotoRequestAction extends GotoActionBase implements DumbAware {
                 if (element instanceof RestServiceItem) {
                     RestServiceItem navigationItem = (RestServiceItem) element;
                     if (navigationItem.canNavigate()) {
-                        navigationItem.navigate(true);
+//                        navigationItem.navigate(true);
                         Actions.gotoApiServiceTree(navigationItem.getPsiMethod());
                     }
                 }
