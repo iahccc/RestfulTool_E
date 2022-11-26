@@ -12,8 +12,9 @@ package com.github.restful.tool.view.window.options.template;
 
 import com.github.restful.tool.beans.settings.SettingKey;
 import com.github.restful.tool.beans.settings.Settings;
+import com.github.restful.tool.view.components.editor.CustomEditor;
 import com.github.restful.tool.view.window.options.Option;
-import com.intellij.ui.components.JBTextArea;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,24 +29,24 @@ import java.awt.event.KeyAdapter;
  * @author iahc
  * @since 2022/11/25
  */
-public class TextArea<T> extends JPanel implements Option {
+public class JsonTextArea<T> extends JPanel implements Option {
 
     public final SettingKey<T> key;
     private final Integer topInset;
 
-    private final JTextArea textField;
+    private final CustomEditor textField;
 
     private final Verify<T> verify;
 
-    public TextArea(@Nullable T defaultValue, @NotNull SettingKey<T> key, Verify<T> verify, boolean labelOnTop) {
+    public JsonTextArea(@Nullable T defaultValue, @NotNull SettingKey<T> key, Verify<T> verify, boolean labelOnTop) {
         this(key.getName(), defaultValue, key, null, verify, labelOnTop);
     }
 
-    public TextArea(@NotNull String label, @Nullable T defaultValue, @NotNull SettingKey<T> key, Integer topInset, Verify<T> verify, boolean labelOnTop) {
+    public JsonTextArea(@NotNull String label, @Nullable T defaultValue, @NotNull SettingKey<T> key, Integer topInset, Verify<T> verify, boolean labelOnTop) {
         super(new FlowLayout(FlowLayout.LEFT));
         this.key = key;
         this.topInset = topInset;
-        this.textField = new JTextArea(toString(defaultValue));
+        this.textField = new CustomEditor(ProjectManager.getInstance().getDefaultProject(), CustomEditor.JSON_FILE_TYPE);
         this.verify = verify;
 
         this.add(
@@ -106,7 +107,7 @@ public class TextArea<T> extends JPanel implements Option {
         this.textField.addKeyListener(adapter);
     }
 
-    protected JTextArea getInput() {
+    protected CustomEditor getInput() {
         return this.textField;
     }
 
@@ -122,8 +123,8 @@ public class TextArea<T> extends JPanel implements Option {
     }
 
     private void initInput() {
-        getInput().setColumns(80);
-        getInput().setRows(10);
+        getInput().setPreferredSize(new Dimension(500, 250));
+        getInput().setMinimumSize(new Dimension(500, 250));
     }
 
 }

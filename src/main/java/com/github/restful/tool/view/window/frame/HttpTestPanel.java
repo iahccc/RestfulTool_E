@@ -29,6 +29,7 @@ import com.github.restful.tool.utils.data.JsonUtil;
 import com.github.restful.tool.view.components.editor.CustomEditor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
@@ -180,7 +181,7 @@ public class HttpTestPanel extends JPanel {
         filterPanel.add(environment);
 
 
-        requestUrl = new CustomEditor(project);
+        requestUrl = new CustomEditor(project, CustomEditor.TEXT_FILE_TYPE, false, false, false);
         requestUrl.setOneLineMode(true);
         requestUrl.setName(IDENTITY_URL);
         if(requestUrl.getEditor() != null) {
@@ -188,8 +189,22 @@ public class HttpTestPanel extends JPanel {
         }
         panelInput.add(requestUrl);
 
-        sendRequest = new JXButton(Bundle.getString("http.tool.button.send"));
-        panelInput.add(sendRequest, BorderLayout.EAST);
+        JPanel jPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+        panelInput.add(jPanel, BorderLayout.EAST);
+        sendRequest = new JButton(AllIcons.Actions.Execute);
+        sendRequest.setPreferredSize(new Dimension(30, 30));
+        sendRequest.setToolTipText("Click to send the request");
+        sendRequest.setOpaque(false);
+        sendRequest.setContentAreaFilled(false);
+        sendRequest.setBorder(BorderFactory.createEmptyBorder());
+        jPanel.add(sendRequest);
+        resetBtn = new JButton(AllIcons.Actions.BuildLoadChanges);
+        resetBtn.setPreferredSize(new Dimension(30, 30));
+        resetBtn.setToolTipText("Double click to reset request info");
+        resetBtn.setOpaque(false);
+        resetBtn.setContentAreaFilled(false);
+        resetBtn.setBorder(BorderFactory.createEmptyBorder());
+        jPanel.add(resetBtn);
 
         tabs = new JBTabsImpl(project);
 
@@ -222,10 +237,6 @@ public class HttpTestPanel extends JPanel {
 
         add(tabs.getComponent(), BorderLayout.CENTER);
 
-
-        JPanel southPanel = new JPanel(new BorderLayout());
-        add(southPanel, BorderLayout.SOUTH);
-
         JPanel bodyFileTypePanel = new JPanel(new BorderLayout());
         bodyFileTypePanel.add(new JBLabel(Bundle.getString("other.restDetail.chooseBodyFileType")), BorderLayout.WEST);
         requestBodyFileType = new ComboBox<>(new FileType[]{
@@ -237,7 +248,7 @@ public class HttpTestPanel extends JPanel {
         requestBodyFileType.setFocusable(false);
         bodyFileTypePanel.add(requestBodyFileType, BorderLayout.CENTER);
         bodyFileTypePanel.setBorder(JBUI.Borders.emptyLeft(3));
-        southPanel.add(bodyFileTypePanel, BorderLayout.NORTH);
+        add(bodyFileTypePanel, BorderLayout.SOUTH);
         tabs.addListener(new TabsListener() {
             @Override
             public void beforeSelectionChanged(TabInfo oldSelection, TabInfo newSelection) {
@@ -251,13 +262,6 @@ public class HttpTestPanel extends JPanel {
         } else {
             bodyFileTypePanel.setVisible(bodyTab.getText().equalsIgnoreCase(selectedTab.getText()));
         }
-
-        JPanel panel = new JPanel(new BorderLayout());
-        southPanel.add(panel, BorderLayout.SOUTH);
-
-        resetBtn = new JButton();
-        resetBtn.setText(Bundle.getString("http.tool.button.reset"));
-        panel.add(resetBtn, BorderLayout.EAST);
 
         setColor(false);
     }
@@ -368,12 +372,33 @@ public class HttpTestPanel extends JPanel {
                 }
             }
         });
-
-        resetBtn.addMouseMotionListener(new MouseAdapter(){
-            public void mouseMoved(MouseEvent e) {
-                resetBtn.setToolTipText("Double Click");
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                Component component = e.getComponent();
+                if(component instanceof JButton) {
+                    JButton button = (JButton) component;
+                    button.setOpaque(true);
+                    button.setContentAreaFilled(true);
+                    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
             }
-        });
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                Component component = e.getComponent();
+                if(component instanceof JButton) {
+                    JButton button = (JButton) component;
+                    button.setOpaque(false);
+                    button.setContentAreaFilled(false);
+                    button.setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        };
+        sendRequest.addMouseListener(mouseAdapter);
+        resetBtn.addMouseListener(mouseAdapter);
     }
 
     private void execScript(String responseBody, Map<String, List<String>> headers) {

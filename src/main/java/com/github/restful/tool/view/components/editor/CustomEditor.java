@@ -45,21 +45,33 @@ public class CustomEditor extends EditorTextField {
      */
     public static final FileType XML_FILE_TYPE = XmlFileType.INSTANCE;
 
+    private boolean lineNumberShown;
+    private boolean horizontalScrollbarVisible;
+    private boolean verticalScrollbarVisible;
+
     public CustomEditor(Project project) {
         this(project, TEXT_FILE_TYPE);
     }
 
     public CustomEditor(Project project, FileType fileType) {
-        super(null, project, fileType, false, false);
+        this(project, fileType, true, true, true);
     }
 
-    public static void setupTextFieldEditor(@NotNull EditorEx editor) {
+    public CustomEditor(Project project, FileType fileType, boolean lineNumberShown, boolean horizontalScrollbarVisible, boolean verticalScrollbarVisible) {
+        super(null, project, fileType, false, false);
+
+        this.lineNumberShown = lineNumberShown;
+        this.horizontalScrollbarVisible = horizontalScrollbarVisible;
+        this.verticalScrollbarVisible = verticalScrollbarVisible;
+    }
+
+    public void setupEditor(@NotNull EditorEx editor) {
         EditorSettings settings = editor.getSettings();
         settings.setFoldingOutlineShown(true);
-        settings.setLineNumbersShown(true);
         settings.setIndentGuidesShown(true);
-        editor.setHorizontalScrollbarVisible(true);
-        editor.setVerticalScrollbarVisible(true);
+        settings.setLineNumbersShown(lineNumberShown);
+        editor.setHorizontalScrollbarVisible(horizontalScrollbarVisible);
+        editor.setVerticalScrollbarVisible(verticalScrollbarVisible);
     }
 
     public void setText(@Nullable final String text, @NotNull final FileType fileType) {
@@ -102,7 +114,7 @@ public class CustomEditor extends EditorTextField {
     protected EditorEx createEditor() {
         EditorEx editor = super.createEditor();
         initOneLineModePre(editor);
-        setupTextFieldEditor(editor);
+        setupEditor(editor);
         return editor;
     }
 
