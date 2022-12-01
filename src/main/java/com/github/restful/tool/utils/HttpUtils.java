@@ -53,8 +53,7 @@ public final class HttpUtils {
 
         if(HttpMethod.GET == method) {
             try{
-                Gson gson = new Gson();
-                Map<String, Object> map = gson.fromJson(body, Map.class);
+                Map map = JSONUtil.parseObj(body).toBean(Map.class);
                 body = HttpUtil.toParams(map);
             } catch (JsonSyntaxException ignored) {
             }

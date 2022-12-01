@@ -211,6 +211,7 @@ public class ApiServiceListPanel extends AbstractListTreePanel {
         javax.swing.tree.TreeNode[] nodes = getTreeModel().getPathToRoot(serviceNode);
         TreePath path = new TreePath(nodes);
         getTree().setSelectionPath(path);
+        getTree().scrollPathToVisible(path);
         getTree().requestFocus();
     }
 }
