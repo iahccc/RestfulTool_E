@@ -51,17 +51,6 @@ public final class HttpUtils {
             return request;
         }
 
-        if(HttpMethod.GET == method) {
-            try{
-                Map map = JSONUtil.parseObj(body).toBean(Map.class);
-                body = HttpUtil.toParams(map);
-            } catch (JsonSyntaxException ignored) {
-            }
-        }
-
-        // 设置内容主体, 且自动判断类
-        request.body(body);
-
         // 替换url上的变量
         if (body.contains("{") && body.contains("}") && JSONUtil.isJson(body)) {
             JSONObject json = JSONUtil.parseObj(body);
@@ -74,6 +63,17 @@ public final class HttpUtils {
             }
             request.setUrl(url);
         }
+
+        if(HttpMethod.GET == method) {
+            try{
+                Map map = JSONUtil.parseObj(body).toBean(Map.class);
+                body = HttpUtil.toParams(map);
+            } catch (JsonSyntaxException ignored) {
+            }
+        }
+
+        // 设置内容主体, 且自动判断类
+        request.body(body);
 
         return request;
     }

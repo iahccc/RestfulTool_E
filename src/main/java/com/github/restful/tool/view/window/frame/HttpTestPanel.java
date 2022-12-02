@@ -10,6 +10,7 @@
  */
 package com.github.restful.tool.view.window.frame;
 
+import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.script.ScriptUtil;
@@ -20,6 +21,7 @@ import com.github.restful.tool.beans.RequestInfo;
 import com.github.restful.tool.beans.settings.Settings;
 import com.github.restful.tool.configuration.AppSetting;
 import com.github.restful.tool.service.Notify;
+import com.github.restful.tool.service.ToolWindowService;
 import com.github.restful.tool.service.topic.RestDetailTopic;
 import com.github.restful.tool.utils.Async;
 import com.github.restful.tool.utils.HttpUtils;
@@ -29,8 +31,10 @@ import com.github.restful.tool.utils.data.JsonUtil;
 import com.github.restful.tool.view.components.editor.CustomEditor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileTypes.FileType;
@@ -59,8 +63,10 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -464,8 +470,11 @@ public class HttpTestPanel extends JPanel {
         }
 
         responseView.setText(null);
+
+        String body = replaceVariable(requestBody.getText());
+        HttpRequest request = HttpUtils.newHttpRequest(method, replaceVariable(url), headers, body);
         HttpUtils.run(
-                HttpUtils.newHttpRequest(method, replaceVariable(url), headers, replaceVariable(requestBody.getText())),
+                request,
                 response -> {
                     final FileType fileType = HttpUtils.parseFileType(response);
                     final String responseBody = response.body();
@@ -475,6 +484,33 @@ public class HttpTestPanel extends JPanel {
                                 execScript(responseBody, response.headers());
                             }
                     );
+                    String now = LocalDateTime.now().toString();
+                    StringBuilder logSb = new StringBuilder();
+                    logSb.append("======Request ").append(now).append("======").append("\n");
+                    logSb.append("----General----").append("\n");
+                    logSb.append("Request URL: ").append(request.getUrl()).append("\n");
+                    logSb.append("Request Method: ").append(request.getMethod().name()).append("\n");
+                    try {
+                        logSb.append("Status Code: ").append(request.getConnection().responseCode()).append("\n");
+                    } catch (IOException ignored) {
+                    }
+//                    logSb.append("Remote Address: " + "");
+//                    logSb.append("Referrer Policy: " + "");
+
+                    logSb.append("----Request Headers----").append("\n");
+                    for(Map.Entry<String, List<String>> entry : request.headers().entrySet()) {
+                        logSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+                    }
+                    logSb.append("----Response Headers----").append("\n");
+                    for(Map.Entry<String, List<String>> entry : response.headers().entrySet()) {
+                        logSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+                    }
+                    logSb.append("----Request Body----").append("\n");
+                    logSb.append(body).append("\n");
+                    logSb.append("----Response Body----").append("\n");
+                    logSb.append(response.body()).append("\n");
+                    logSb.append("=====Request ").append(now).append("=====").append("\n");
+                    ToolWindowService.getInstance(project).getConsoleView().print(logSb.toString(), ConsoleViewContentType.NORMAL_OUTPUT);
                 },
                 e -> {
                     final String response = String.format("%s", e);
