@@ -511,6 +511,7 @@ public class HttpTestPanel extends JPanel {
                     logSb.append(response.body()).append("\n");
                     logSb.append("=====Request ").append(now).append("=====").append("\n");
                     ToolWindowService.getInstance(project).getConsoleView().print(logSb.toString(), ConsoleViewContentType.NORMAL_OUTPUT);
+                    ToolWindowService.getInstance(project).getConsoleView().requestScrollingToEnd();
                 },
                 e -> {
                     final String response = String.format("%s", e);
