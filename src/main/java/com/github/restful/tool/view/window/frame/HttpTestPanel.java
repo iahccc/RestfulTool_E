@@ -50,12 +50,16 @@ import com.intellij.ui.tabs.TabsListener;
 import com.intellij.ui.tabs.impl.JBTabsImpl;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.JBUI;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Source;
+import org.graalvm.polyglot.Value;
 import org.jdesktop.swingx.JXButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.*;
 import java.awt.*;
@@ -408,7 +412,7 @@ public class HttpTestPanel extends JPanel {
     }
 
     private void execScript(String responseBody, Map<String, List<String>> headers) {
-        ScriptEngine engine = ScriptUtil.getJsEngine();
+        ScriptEngine engine =  new ScriptEngineManager().getEngineByName("graal.js");;
         Invocable invocable = (Invocable) engine;
         InputStream jsInputStream = this.getClass().getResourceAsStream("/js/base.js");
         InputStreamReader jsReader = new InputStreamReader(jsInputStream);
@@ -431,6 +435,34 @@ public class HttpTestPanel extends JPanel {
             System.out.println(result);
         } catch (ScriptException | NoSuchMethodException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void execScript0(String responseBody, Map<String, List<String>> headers) {
+
+        Thread.currentThread().setContextClassLoader(Context.class.getClassLoader());
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+            Value value = context.getBindings("js");
+
+            InputStream jsInputStream = this.getClass().getResourceAsStream("/js/base.js");
+            InputStreamReader jsReader = new InputStreamReader(jsInputStream);
+
+            String script = requestScript.getText();
+            Gson gson = new Gson();
+            try {
+                Source baseSource = Source.newBuilder("js", jsReader, "base").build();
+                context.eval(baseSource);
+                value.getMember("setResponseBody").executeVoid(responseBody);;
+                value.getMember("setResponseHeaders").executeVoid(gson.toJson(headers));;
+                context.eval("js", script);
+                Value globalVariables = value.getMember("getGlobalVariables").execute();
+
+                String result = globalVariables.asString();
+                Map<String, String> map = gson.fromJson(result, Map.class);
+                addVariable((String) environment.getSelectedItem(), map);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -481,7 +513,7 @@ public class HttpTestPanel extends JPanel {
                     ApplicationManager.getApplication().invokeLater(
                             () -> {
                                 responseView.setText(responseBody, fileType);
-                                execScript(responseBody, response.headers());
+                                execScript0(responseBody, response.headers());
                             }
                     );
                     String now = LocalDateTime.now().toString();
