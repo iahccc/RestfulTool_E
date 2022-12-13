@@ -46,6 +46,11 @@
     <depends>org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="com.github.restful.tool.listener.MyStartupActivity"/>
+        <codeInsight.lineMarkerProvider
+                language="JAVA"
+                implementationClass="com.github.restful.tool.linemarker.SimpleLineMarkerProvider"/>
+
         <applicationService
                 serviceImplementation="com.github.restful.tool.configuration.AppSetting"/>
 

@@ -15,11 +15,13 @@ import com.github.restful.tool.service.topic.RestDetailTopic;
 import com.github.restful.tool.service.topic.ServiceTreeTopic;
 import com.github.restful.tool.utils.ApiServices;
 import com.github.restful.tool.utils.Async;
+import com.github.restful.tool.utils.data.ProjectInfo;
 import com.github.restful.tool.view.components.tree.BaseNode;
 import com.github.restful.tool.view.components.tree.node.ModuleNode;
 import com.github.restful.tool.view.components.tree.node.RootNode;
 import com.github.restful.tool.view.components.tree.node.ServiceNode;
 import com.github.restful.tool.view.window.WindowFactory;
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.ide.CommonActionsManager;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -110,7 +112,24 @@ public class Window extends SimpleToolWindowPanel implements Disposable {
                 () -> Async.runRead(project, () -> {
                     resetModules();
                     return this.getRequests();
-                }, this::renderApiServiceTree)
+                }, data -> {
+                    renderApiServiceTree(data);
+
+                    // 保存ApiService数据
+                    List<ApiService> apiServiceList = data.values()
+                            .stream()
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList());
+                    ProjectInfo.get(project).setApiServiceMap(
+                            apiServiceList
+                                    .stream()
+                                    .filter(v -> v.getPsiElement() instanceof PsiMethod)
+                                    .collect(Collectors.groupingBy(v -> (PsiMethod) v.getPsiElement()))
+                    );
+
+                    // 刷新LineMarker
+                    DaemonCodeAnalyzer.getInstance(project).restart();
+                })
         );
 
         Disposer.register(project, this);
@@ -162,6 +181,21 @@ public class Window extends SimpleToolWindowPanel implements Disposable {
 
             // 装载Module列表
             resetModules();
+
+            // 保存ApiService数据
+            List<ApiService> apiServiceList = data.values()
+                    .stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+            ProjectInfo.get(project).setApiServiceMap(
+                    apiServiceList
+                            .stream()
+                            .filter(v -> v.getPsiElement() instanceof PsiMethod)
+                            .collect(Collectors.groupingBy(v -> (PsiMethod) v.getPsiElement()))
+            );
+
+            // 刷新LineMarker
+            DaemonCodeAnalyzer.getInstance(project).restart();
         });
     }
 
