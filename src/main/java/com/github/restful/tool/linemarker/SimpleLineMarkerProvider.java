@@ -8,6 +8,7 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,14 +19,15 @@ public class SimpleLineMarkerProvider implements LineMarkerProvider {
 	public LineMarkerInfo<?> getLineMarkerInfo(@NotNull PsiElement element) {
 		if (element instanceof PsiMethod) {
 			PsiMethod method = (PsiMethod) element;
+			PsiIdentifier nameIdentifier = method.getNameIdentifier();
 
-			if(null != ProjectInfo.get(method.getProject()).getApiServiceMap().get(method)) {
-				return new LineMarkerInfo<>(method,
-						method.getTextRange(),
+			if(null != ProjectInfo.get(method.getProject()).getApiServiceMap().get(method) && null != nameIdentifier) {
+				return new LineMarkerInfo<>(nameIdentifier,
+						nameIdentifier.getTextRange(),
 						AllIcons.Actions.DynamicUsages,
 						v -> Bundle.getString("action.NavigateToView.text"),
 						(e, m) -> {
-							Actions.gotoApiServiceTree(m);
+							Actions.gotoApiServiceTree(method);
 						},
 						GutterIconRenderer.Alignment.LEFT);
 			}
