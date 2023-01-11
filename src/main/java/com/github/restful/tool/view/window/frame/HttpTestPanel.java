@@ -343,7 +343,7 @@ public class HttpTestPanel extends JPanel {
                     requestInfo.setRequestBody(requestBody.getText());
                     requestInfo.setScript(requestScript.getText());
                     if(!requestInfo.equals(AppSetting.getInstance().getRequestInfo(chooseApiService.getIdentity()))) {
-                        AppSetting.getInstance().saveRequestInfo(chooseApiService.getIdentity(), requestInfo);
+                        AppSetting.getInstance().saveRequestInfo(project.getName() + " " + chooseApiService.getIdentity(), requestInfo);
                         setColor(true);
                     }
                 }
