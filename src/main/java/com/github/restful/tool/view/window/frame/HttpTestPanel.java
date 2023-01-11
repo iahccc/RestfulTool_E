@@ -342,8 +342,8 @@ public class HttpTestPanel extends JPanel {
                     requestInfo.setHead(requestHead.getText());
                     requestInfo.setRequestBody(requestBody.getText());
                     requestInfo.setScript(requestScript.getText());
-                    if(!requestInfo.equals(AppSetting.getInstance().getRequestInfo(chooseApiService.getIdentity()))) {
-                        AppSetting.getInstance().saveRequestInfo(project.getName() + " " + chooseApiService.getIdentity(), requestInfo);
+                    if(!requestInfo.equals(AppSetting.getInstance().getRequestInfo(project, chooseApiService.getIdentity()))) {
+                        AppSetting.getInstance().saveRequestInfo(project, chooseApiService.getIdentity(), requestInfo);
                         setColor(true);
                     }
                 }
@@ -373,7 +373,7 @@ public class HttpTestPanel extends JPanel {
                 super.mouseClicked(e);
                 if(e.getClickCount() == 2) {
                     if (chooseApiService != null) {
-                        AppSetting.getInstance().removeRequestInfo(chooseApiService.getIdentity());
+                        AppSetting.getInstance().removeRequestInfo(project, chooseApiService.getIdentity());
                         bodyCache.remove(chooseApiService);
                         bodyTextTypeCache.remove(chooseApiService);
                         chooseApiService.setHeaders("");
@@ -594,7 +594,7 @@ public class HttpTestPanel extends JPanel {
 
             RequestInfo requestInfo = null;
             if(chooseApiService != null) {
-                requestInfo = AppSetting.getInstance().getRequestInfo(chooseApiService.getIdentity());
+                requestInfo = AppSetting.getInstance().getRequestInfo(project, chooseApiService.getIdentity());
             }
             if(null != requestInfo) {
                 requestMethod.setSelectedItem(requestInfo.getHttpMethod());

@@ -16,6 +16,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,25 +77,29 @@ public class AppSetting implements PersistentStateComponent<AppSetting> {
         this.setting.applySetting(setting);
     }
 
-    public RequestInfo getRequestInfo(String key) {
+    public RequestInfo getRequestInfo(Project project, String key) {
         if(key == null) {
             return null;
         }
-        return requestInfoMap.get(key);
+        return requestInfoMap.get(getRequestInfoKey(project, key));
     }
 
-    public void removeRequestInfo(String key) {
+    public void removeRequestInfo(Project project, String key) {
         if(key == null) {
             return;
         }
-        requestInfoMap.remove(key);
+        requestInfoMap.remove(getRequestInfoKey(project, key));
     }
 
-    public void saveRequestInfo(String key, RequestInfo requestInfo) {
+    public void saveRequestInfo(Project project, String key, RequestInfo requestInfo) {
         if(key == null) {
             return;
         }
-        requestInfoMap.put(key, requestInfo);
+        requestInfoMap.put(getRequestInfoKey(project, key), requestInfo);
+    }
+
+    private static String getRequestInfoKey(Project project, String requestIdentity) {
+        return project.getName() + " " + requestIdentity;
     }
 
     public String getEnvJson() {
