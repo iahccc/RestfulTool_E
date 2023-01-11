@@ -67,10 +67,10 @@
         <projectService
                 serviceImplementation="com.github.restful.tool.view.search.GotoRequestConfiguration"/>
 
-        <toolWindow id="RestfulTool" anchor="right"
-                    factoryClass="com.github.restful.tool.view.window.WindowFactory"
-                    order="last"
-                    doNotActivateOnStart="true" icon="AllIcons.Toolwindows.WebToolWindow"/>
+<!--        <toolWindow id="RestfulTool" anchor="right"-->
+<!--                    factoryClass="com.github.restful.tool.view.window.WindowFactory"-->
+<!--                    order="last"-->
+<!--                    doNotActivateOnStart="false" icon="AllIcons.Toolwindows.WebToolWindow"/>-->
 
         <projectService serviceInterface="com.github.restful.tool.service.Notify"
                         serviceImplementation="com.github.restful.tool.service.impl.NotificationImpl"/>

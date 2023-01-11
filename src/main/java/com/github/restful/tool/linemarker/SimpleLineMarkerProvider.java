@@ -24,7 +24,7 @@ public class SimpleLineMarkerProvider implements LineMarkerProvider {
 			if(null != ProjectInfo.get(method.getProject()).getApiServiceMap().get(method) && null != nameIdentifier) {
 				return new LineMarkerInfo<>(nameIdentifier,
 						nameIdentifier.getTextRange(),
-						AllIcons.Actions.DynamicUsages,
+						AllIcons.Toolwindows.WebToolWindow,
 						v -> Bundle.getString("action.NavigateToView.text"),
 						(e, m) -> {
 							Actions.gotoApiServiceTree(method);
