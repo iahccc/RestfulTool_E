@@ -170,6 +170,9 @@ public class Window extends SimpleToolWindowPanel implements Disposable {
     }
 
     public void refresh() {
+        // 重新装载Module列表
+        resetModules();
+
         Async.runRead(project, this::getRequests, data -> {
             httpTestPanel.reset();
 
@@ -178,9 +181,6 @@ public class Window extends SimpleToolWindowPanel implements Disposable {
             // 清除RestDetail中的Cache缓存
             RestDetailTopic restDetailTopic = project.getMessageBus().syncPublisher(RestDetailTopic.TOPIC);
             restDetailTopic.clearCache(null);
-
-            // 装载Module列表
-            resetModules();
 
             // 保存ApiService数据
             List<ApiService> apiServiceList = data.values()
