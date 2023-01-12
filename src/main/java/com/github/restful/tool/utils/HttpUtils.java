@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  */
 public final class HttpUtils {
 
-    private static final int REQUEST_TIMEOUT = 1000 * 10;
+    private static final int REQUEST_TIMEOUT = 1000 * 30;
 
     private static final ExecutorService executor = ThreadUtil.newExecutor(1, 5);
 

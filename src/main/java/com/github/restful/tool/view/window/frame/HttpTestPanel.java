@@ -11,6 +11,7 @@
 package com.github.restful.tool.view.window.frame;
 
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.script.ScriptUtil;
@@ -516,34 +517,7 @@ public class HttpTestPanel extends JPanel {
                                 execScript0(responseBody, response.headers());
                             }
                     );
-                    String now = LocalDateTime.now().toString();
-                    StringBuilder logSb = new StringBuilder();
-                    logSb.append("======Request ").append(now).append("======").append("\n");
-                    logSb.append("----General----").append("\n");
-                    logSb.append("Request URL: ").append(request.getUrl()).append("\n");
-                    logSb.append("Request Method: ").append(request.getMethod().name()).append("\n");
-                    try {
-                        logSb.append("Status Code: ").append(request.getConnection().responseCode()).append("\n");
-                    } catch (IOException ignored) {
-                    }
-//                    logSb.append("Remote Address: " + "");
-//                    logSb.append("Referrer Policy: " + "");
-
-                    logSb.append("----Request Headers----").append("\n");
-                    for(Map.Entry<String, List<String>> entry : request.headers().entrySet()) {
-                        logSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-                    }
-                    logSb.append("----Response Headers----").append("\n");
-                    for(Map.Entry<String, List<String>> entry : response.headers().entrySet()) {
-                        logSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-                    }
-                    logSb.append("----Request Body----").append("\n");
-                    logSb.append(body).append("\n");
-                    logSb.append("----Response Body----").append("\n");
-                    logSb.append(response.body()).append("\n");
-                    logSb.append("=====Request ").append(now).append("=====").append("\n");
-                    ToolWindowService.getInstance(project).getConsoleView().print(logSb.toString(), ConsoleViewContentType.NORMAL_OUTPUT);
-                    ToolWindowService.getInstance(project).getConsoleView().requestScrollingToEnd();
+                    consoleViewPrint(request, response, body);
                 },
                 e -> {
                     final String response = String.format("%s", e);
@@ -552,6 +526,37 @@ public class HttpTestPanel extends JPanel {
                     );
                 }
         );
+    }
+
+    private void consoleViewPrint(HttpRequest request, HttpResponse response, String body) {
+        String now = LocalDateTime.now().toString();
+        StringBuilder logSb = new StringBuilder();
+        logSb.append("======Request ").append(now).append("======").append("\n");
+        logSb.append("----General----").append("\n");
+        logSb.append("Request URL: ").append(request.getUrl()).append("\n");
+        logSb.append("Request Method: ").append(request.getMethod().name()).append("\n");
+        try {
+            logSb.append("Status Code: ").append(request.getConnection().responseCode()).append("\n");
+        } catch (IOException ignored) {
+        }
+//                    logSb.append("Remote Address: " + "");
+//                    logSb.append("Referrer Policy: " + "");
+
+        logSb.append("----Request Headers----").append("\n");
+        for(Map.Entry<String, List<String>> entry : request.headers().entrySet()) {
+            logSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        logSb.append("----Response Headers----").append("\n");
+        for(Map.Entry<String, List<String>> entry : response.headers().entrySet()) {
+            logSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        logSb.append("----Request Body----").append("\n");
+        logSb.append(body).append("\n");
+        logSb.append("----Response Body----").append("\n");
+        logSb.append(response.body()).append("\n");
+        logSb.append("=====Request ").append(now).append("=====").append("\n");
+        ToolWindowService.getInstance(project).getConsoleView().print(logSb.toString(), ConsoleViewContentType.NORMAL_OUTPUT);
+        ToolWindowService.getInstance(project).getConsoleView().requestScrollingToEnd();
     }
 
     private String replaceVariable(String str) {
