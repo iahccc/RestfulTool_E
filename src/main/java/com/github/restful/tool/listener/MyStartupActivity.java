@@ -22,7 +22,8 @@ public class MyStartupActivity implements StartupActivity {
 		WindowFactory windowFactory = new WindowFactory();
 //		ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(WindowFactory.TOOL_WINDOW_ID);
 		ToolWindow toolWindow = ToolWindowManager.getInstance(project)
-				.registerToolWindow(RegisterToolWindowTask.closable("RestfulTool", AllIcons.Toolwindows.WebToolWindow, ToolWindowAnchor.RIGHT));
+				.registerToolWindow(RegisterToolWindowTask.notClosable("RestfulTool", ToolWindowAnchor.RIGHT));
+		toolWindow.setIcon(AllIcons.Toolwindows.WebToolWindow);
 		windowFactory.createToolWindowContent(project, toolWindow);
 	}
 }
