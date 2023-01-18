@@ -45,7 +45,6 @@ public final class HttpUtils {
         HttpRequest request = HttpUtil
                 .createRequest(Method.valueOf(method.name()), url)
                 .timeout(REQUEST_TIMEOUT);
-        headers.forEach((name, value) -> request.header(name, String.valueOf(value)));
 
         if (body == null || "".equals(body.trim())) {
             return request;
@@ -74,6 +73,8 @@ public final class HttpUtils {
 
         // 设置内容主体, 且自动判断类
         request.body(body);
+        // 请求头设置
+        headers.forEach((name, value) -> request.header(name, String.valueOf(value)));
 
         return request;
     }
