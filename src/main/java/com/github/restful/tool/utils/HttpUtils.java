@@ -67,7 +67,7 @@ public final class HttpUtils {
             try{
                 Map map = JSONUtil.parseObj(body).toBean(Map.class);
                 body = HttpUtil.toParams(map);
-            } catch (JsonSyntaxException ignored) {
+            } catch (Exception ignored) {
             }
         }
 
