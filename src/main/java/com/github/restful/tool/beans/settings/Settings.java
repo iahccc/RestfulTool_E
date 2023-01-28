@@ -210,17 +210,17 @@ public class Settings {
                 1
         );
 
-        public static final SettingKey<ContentType> CONTENT_TYPE = SettingKey.createComboBox(
-                Bundle.getString("setting.httpTools.DefaultContentType"),
-                ContentType.values(),
-                new BaseConverter<ContentType>() {
-                    @Override
-                    public ContentType fromString(@NotNull String value) {
-                        return ContentType.find(value);
-                    }
-                },
-                0
-        );
+//        public static final SettingKey<ContentType> CONTENT_TYPE = SettingKey.createComboBox(
+//                Bundle.getString("setting.httpTools.DefaultContentType"),
+//                ContentType.values(),
+//                new BaseConverter<ContentType>() {
+//                    @Override
+//                    public ContentType fromString(@NotNull String value) {
+//                        return ContentType.find(value);
+//                    }
+//                },
+//                0
+//        );
 
 //        public static final SettingKey<String> CONTAINER_CONTEXT = SettingKey.createInputString(
 //                Bundle.getString("setting.httpTools.DefaultContextPathOfTheContainer"),

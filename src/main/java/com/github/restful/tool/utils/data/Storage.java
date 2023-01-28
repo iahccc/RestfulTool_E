@@ -24,10 +24,10 @@ public enum Storage implements IStorage {
      */
     MODULE_API_PREFIX_PATH("MODULE_API_PREFIX_PATH"),
 
-    /**
-     * 模块的http配置
-     */
-    MODULE_HTTP_CONFIG("MODULE_HTTP_CONFIG"),
+//    /**
+//     * 模块的http配置
+//     */
+//    MODULE_HTTP_CONFIG("MODULE_HTTP_CONFIG"),
 
     /**
      * 模块的header配置

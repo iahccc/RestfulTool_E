@@ -17,7 +17,6 @@ import com.github.restful.tool.service.Notify;
 import com.github.restful.tool.service.topic.RefreshServiceTreeTopic;
 import com.github.restful.tool.utils.SystemUtil;
 import com.github.restful.tool.utils.data.Bundle;
-import com.github.restful.tool.view.components.popups.ModuleConfigPopup;
 import com.github.restful.tool.view.components.popups.ModuleHeadersPopup;
 import com.github.restful.tool.view.components.tree.AbstractListTreePanel;
 import com.github.restful.tool.view.components.tree.BaseNode;
@@ -132,11 +131,11 @@ public class ApiServiceListPanel extends AbstractListTreePanel {
             });
             items.add(moduleSetting);
 
-            JBMenuItem moduleConfig = new JBMenuItem(Bundle.getString("action.OpenModuleProperties.text"));
-            moduleConfig.addActionListener(action -> {
-                showPopupMenu(event.getX(), event.getY(), new ModuleConfigPopup(project, moduleName));
-            });
-            items.add(moduleConfig);
+//            JBMenuItem moduleConfig = new JBMenuItem(Bundle.getString("action.OpenModuleProperties.text"));
+//            moduleConfig.addActionListener(action -> {
+//                showPopupMenu(event.getX(), event.getY(), new ModuleConfigPopup(project, moduleName));
+//            });
+//            items.add(moduleConfig);
 
             JBMenuItem moduleHeaders = new JBMenuItem("Module Headers");
             moduleHeaders.addActionListener(action -> {

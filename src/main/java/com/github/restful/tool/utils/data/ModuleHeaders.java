@@ -42,7 +42,7 @@ public class ModuleHeaders {
     }
 
     public static void fillDefault(@NotNull Map<String, String> headers) {
-        headers.put("Content-Type", Settings.HttpToolOptionForm.CONTENT_TYPE.getData().getValue());
+//        headers.put("Content-Type", Settings.HttpToolOptionForm.CONTENT_TYPE.getData().getValue());
     }
 
     public static void apply(@NotNull Map<String, String> headers, @NotNull ApiService apiService) {
