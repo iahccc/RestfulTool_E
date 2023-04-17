@@ -40,7 +40,7 @@ intellij {
 //    version '2020.2'
 //    version 'LATEST-EAP-SNAPSHOT'
 //    version = '2021.1'
-    pluginName.set("RestfulTool")
+    pluginName.set("RestfulTool_E")
     plugins = ["java", "properties", "yaml", "Kotlin"]
 //    plugins.set(listOf("java", "properties", "yaml", "Kotlin"))
 }
