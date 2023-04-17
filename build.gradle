@@ -6,7 +6,7 @@ plugins {
     id 'org.jetbrains.intellij' version '1.9.0'
 }
 sourceCompatibility = JavaVersion.VERSION_1_10
-targetCompatibility = JavaVersion.VERSION_1_10
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
 //    mavenCentral()
@@ -34,7 +34,7 @@ dependencies {
 }
 
 intellij {
-    localPath.set("D:\\Program Files\\IntelliJ IDEA Community Edition 2022.2.3")
+    localPath.set("/opt/idea-IC-223.8617.56")
     updateSinceUntilBuild.set(false)
     type.set("IC")
 //    version '2020.2'

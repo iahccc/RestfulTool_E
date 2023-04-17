@@ -14,7 +14,6 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import cn.hutool.script.ScriptUtil;
 import com.github.restful.tool.beans.ApiService;
 import com.github.restful.tool.beans.EnvironmentInfo;
 import com.github.restful.tool.beans.HttpMethod;
@@ -35,7 +34,7 @@ import com.google.gson.GsonBuilder;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileTypes.FileType;
@@ -54,7 +53,6 @@ import com.intellij.util.ui.JBUI;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
-import org.jdesktop.swingx.JXButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,8 +62,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -78,7 +74,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -155,6 +150,11 @@ public class HttpTestPanel extends JPanel {
      * 选中的Request
      */
     private transient ApiService chooseApiService;
+
+    /**
+     * DocumentListener暂停标志
+     */
+    private static boolean DOCUMENT_LISTENER_PAUSE_FLAG = false;
 
     public HttpTestPanel(@NotNull Project project) {
         this.project = project;
@@ -324,49 +324,61 @@ public class HttpTestPanel extends JPanel {
             }
         });
 
-        DocumentListener documentListenerForCache = new DocumentListener() {
+        DocumentListener documentListenerForPersistence = new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
-                CustomEditor editor = getCurrentTabbedOfRequest();
-                if (editor != null && chooseApiService != null) {
+                if(DOCUMENT_LISTENER_PAUSE_FLAG) {
+                    return;
+                }
+                String identity = chooseApiService.getIdentity();
+                RequestInfo requestInfo = AppSetting.getInstance().getRequestInfo(project, identity);
+                if (chooseApiService != null) {
+                    CustomEditor editor = getCurrentTabbedOfRequest();
                     String name = editor.getName();
                     String text = editor.getText();
                     if(name != null) {
                         setCache(name, chooseApiService, text);
                     }
 
-                    // 保存请求信息
-                    RequestInfo requestInfo = new RequestInfo();
-                    HttpMethod method = Optional.ofNullable((HttpMethod) requestMethod.getSelectedItem()).orElse(HttpMethod.GET);
-                    requestInfo.setHttpMethod(method);
-                    requestInfo.setUrl(requestUrl.getText());
-                    requestInfo.setHead(requestHead.getText());
-                    requestInfo.setRequestBody(requestBody.getText());
-                    requestInfo.setScript(requestScript.getText());
-                    if(!requestInfo.equals(AppSetting.getInstance().getRequestInfo(project, chooseApiService.getIdentity()))) {
-                        AppSetting.getInstance().saveRequestInfo(project, chooseApiService.getIdentity(), requestInfo);
-                        setColor(true);
+//                    HttpMethod method = Optional.ofNullable((HttpMethod) requestMethod.getSelectedItem()).orElse(HttpMethod.GET);
+                    Document document = event.getDocument();
+                    if (document.equals(requestUrl.getDocument())) {
+                        requestInfo.setUrl(requestUrl.getText());
+                    } else if (document.equals(requestHead.getDocument())) {
+                        requestInfo.setHead(requestHead.getText());
+                    } else if (document.equals(requestBody.getDocument())) {
+                        requestInfo.setRequestBody(requestBody.getText());
+                    } else if (document.equals(requestScript.getDocument())) {
+                        requestInfo.setScript(requestScript.getText());
                     }
+
+                    // 保存请求信息
+                    AppSetting.getInstance().saveRequestInfo(project, identity, requestInfo);
+                    setColor(true);
                 }
             }
         };
         // fixBug: 无法正确绑定监听事件，导致无法缓存单个request的请求头或请求参数的数据
-        Function<CustomEditor, FocusAdapter> function = (editor) -> new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                editor.addDocumentListener(documentListenerForCache);
-            }
+//        Function<CustomEditor, FocusAdapter> function = (editor) -> new FocusAdapter() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//                editor.addDocumentListener(documentListenerForPersistence);
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                editor.removeDocumentListener(documentListenerForPersistence);
+//            }
+//        };
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                editor.removeDocumentListener(documentListenerForCache);
-            }
-        };
-
-        requestUrl.addFocusListener(function.apply(requestUrl));
-        requestHead.addFocusListener(function.apply(requestHead));
-        requestBody.addFocusListener(function.apply(requestBody));
-        requestScript.addFocusListener(function.apply(requestScript));
+//        requestUrl.addFocusListener(function.apply(requestUrl));
+//        requestHead.addFocusListener(function.apply(requestHead));
+//        requestBody.addFocusListener(function.apply(requestBody));
+//        requestScript.addFocusListener(function.apply(requestScript));
+        requestUrl.getDocument().addDocumentListener(documentListenerForPersistence);
+        requestHead.getDocument().addDocumentListener(documentListenerForPersistence);
+        requestBody.addDocumentListener(documentListenerForPersistence);
+        requestScript.getDocument().addDocumentListener(documentListenerForPersistence);
 
         resetBtn.addMouseListener(new MouseAdapter() {
             @Override
@@ -591,6 +603,7 @@ public class HttpTestPanel extends JPanel {
     }
 
     public void chooseRequest(@Nullable ApiService apiService) {
+        DOCUMENT_LISTENER_PAUSE_FLAG = true;
         this.chooseApiService = apiService;
         this.requestBodyFileType.setSelectedItem(getCacheType());
 
@@ -621,6 +634,8 @@ public class HttpTestPanel extends JPanel {
 
             // 选择Body页面
             tabs.select(bodyTab, false);
+
+            DOCUMENT_LISTENER_PAUSE_FLAG = false;
         };
         Async.runRead(project, parseRequestCallable, parseRequestConsumer);
     }

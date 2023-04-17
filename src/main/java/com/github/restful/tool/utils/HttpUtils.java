@@ -7,8 +7,6 @@ import cn.hutool.json.JSONUtil;
 import com.github.restful.tool.beans.HttpMethod;
 import com.github.restful.tool.beans.settings.Settings;
 import com.github.restful.tool.view.components.editor.CustomEditor;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.intellij.openapi.fileTypes.FileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +49,7 @@ public final class HttpUtils {
         }
 
         // 替换url上的变量
-        if (body.contains("{") && body.contains("}") && JSONUtil.isJson(body)) {
+        if (url.contains("{") && url.contains("}") && JSONUtil.isJson(body)) {
             JSONObject json = JSONUtil.parseObj(body);
             for (Map.Entry<String, Object> entry : json.entrySet()) {
                 Object value = entry.getValue();
@@ -59,8 +57,10 @@ public final class HttpUtils {
                     continue;
                 }
                 url = url.replace("{" + entry.getKey() + "}", String.valueOf(value));
+                json.remove(entry.getKey());
             }
             request.setUrl(url);
+            body = json.toString();
         }
 
         if(HttpMethod.GET == method) {
