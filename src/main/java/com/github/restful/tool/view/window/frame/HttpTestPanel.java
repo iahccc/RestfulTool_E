@@ -341,14 +341,22 @@ public class HttpTestPanel extends JPanel {
                     }
 
 //                    HttpMethod method = Optional.ofNullable((HttpMethod) requestMethod.getSelectedItem()).orElse(HttpMethod.GET);
-                    Document document = event.getDocument();
-                    if (document.equals(requestUrl.getDocument())) {
+                    if(requestInfo != null) {
+                        Document document = event.getDocument();
+                        if (document.equals(requestUrl.getDocument())) {
+                            requestInfo.setUrl(requestUrl.getText());
+                        } else if (document.equals(requestHead.getDocument())) {
+                            requestInfo.setHead(requestHead.getText());
+                        } else if (document.equals(requestBody.getDocument())) {
+                            requestInfo.setRequestBody(requestBody.getText());
+                        } else if (document.equals(requestScript.getDocument())) {
+                            requestInfo.setScript(requestScript.getText());
+                        }
+                    } else {
+                        requestInfo = new RequestInfo();
                         requestInfo.setUrl(requestUrl.getText());
-                    } else if (document.equals(requestHead.getDocument())) {
                         requestInfo.setHead(requestHead.getText());
-                    } else if (document.equals(requestBody.getDocument())) {
                         requestInfo.setRequestBody(requestBody.getText());
-                    } else if (document.equals(requestScript.getDocument())) {
                         requestInfo.setScript(requestScript.getText());
                     }
 
