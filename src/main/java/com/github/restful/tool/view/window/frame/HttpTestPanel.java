@@ -62,6 +62,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -352,12 +354,14 @@ public class HttpTestPanel extends JPanel {
                         } else if (document.equals(requestScript.getDocument())) {
                             requestInfo.setScript(requestScript.getText());
                         }
+                        requestInfo.setHttpMethod(HttpMethod.parse(requestMethod.getSelectedItem()));
                     } else {
                         requestInfo = new RequestInfo();
                         requestInfo.setUrl(requestUrl.getText());
                         requestInfo.setHead(requestHead.getText());
                         requestInfo.setRequestBody(requestBody.getText());
                         requestInfo.setScript(requestScript.getText());
+                        requestInfo.setHttpMethod(HttpMethod.parse(requestMethod.getSelectedItem()));
                     }
 
                     // 保存请求信息
@@ -387,6 +391,13 @@ public class HttpTestPanel extends JPanel {
         requestHead.getDocument().addDocumentListener(documentListenerForPersistence);
         requestBody.addDocumentListener(documentListenerForPersistence);
         requestScript.getDocument().addDocumentListener(documentListenerForPersistence);
+        requestMethod.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // 触发documentListenerForPersistence逻辑
+                requestUrl.getDocument().setText(requestUrl.getDocument().getText());
+            }
+        });
 
         resetBtn.addMouseListener(new MouseAdapter() {
             @Override
