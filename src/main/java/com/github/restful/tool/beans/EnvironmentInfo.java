@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author iahc
  * @since 2022/11/7
  */
-public class EnvironmentInfo extends HashMap<String, Map<String, Object>> implements Serializable {
+public class EnvironmentInfo extends LinkedHashMap<String, Map<String, Object>> implements Serializable {
 	private static final long serialVersionUID = -7543418458252396202L;
 
 	public static EnvironmentInfo fromJson(String json) {

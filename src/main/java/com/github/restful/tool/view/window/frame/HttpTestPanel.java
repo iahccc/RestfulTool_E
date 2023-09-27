@@ -70,10 +70,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -189,6 +187,7 @@ public class HttpTestPanel extends JPanel {
         String[] items = {"No Environment"};
         if(environmentInfo != null) {
             items = environmentInfo.keySet().toArray(new String[0]);
+            Arrays.sort(items);
         }
         environment = new ComboBox<>(items);
         filterPanel.add(environment);
@@ -678,6 +677,7 @@ public class HttpTestPanel extends JPanel {
         String[] items = {"No Environment"};
         if(environmentInfo != null) {
             items = environmentInfo.keySet().toArray(new String[0]);
+            Arrays.sort(items);
         }
         for(String item : items) {
             environment.addItem(item);
