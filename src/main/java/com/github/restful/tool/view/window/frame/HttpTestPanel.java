@@ -394,8 +394,10 @@ public class HttpTestPanel extends JPanel {
         requestMethod.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                // 触发documentListenerForPersistence逻辑
-                requestUrl.getDocument().setText(requestUrl.getDocument().getText());
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    // 触发documentListenerForPersistence逻辑
+                    requestUrl.getDocument().setText(requestUrl.getDocument().getText());
+                });
             }
         });
 
